@@ -673,6 +673,39 @@
     </section>
 
     <!-- ROUTED VIEWS -->
+<!-- ÜBER UNS -->
+<section class="panel" style="margin-bottom:26px;">
+  <div class="panel-head">
+    <h2>Über uns <small>Reichstein Automobile</small></h2>
+  </div>
+  <div class="panel-body">
+    <div class="grid">
+      <div style="grid-column: span 7;">
+        <p class="muted" style="font-size:14px; line-height:1.6;">
+          Seit über <b>20 Jahren</b> steht <b>Reichstein Automobile</b> für
+          Premium-Gebrauchtwagen in Berlin. Unser Fokus liegt auf
+          hochwertigen Fahrzeugen, transparenter Beratung und einem
+          sicheren Kaufgefühl.
+        </p>
+        <p class="muted" style="font-size:14px; line-height:1.6;">
+          Unser Ziel ist es, nicht nur ein Auto zu verkaufen, sondern das
+          <b>passende Fahrzeug</b> für Ihre Bedürfnisse zu finden –
+          zuverlässig, ehrlich und auf Augenhöhe.
+        </p>
+      </div>
+
+      <div style="grid-column: span 5;">
+        <div class="list">
+          <div class="li"><span>✔ Premium-Marken</span><b>BMW · Mercedes · Porsche · Audi</b></div>
+          <div class="li"><span>✔ Großer Fahrzeugbestand</span><b>ständig verfügbar</b></div>
+          <div class="li"><span>✔ Faire Preise</span><b>transparent & marktgerecht</b></div>
+          <div class="li"><span>✔ Sicherheit</span><b>sorgfältig geprüft</b></div>
+          <div class="li"><span>✔ Beratung</span><b>persönlich & ehrlich</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     <section id="viewCars">
       <div class="panel">
         <div class="panel-head">
@@ -867,14 +900,14 @@
             <div class="field span-6">
               <label>Adresse</label>
               <div class="control" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                <span class="muted">Hier deine echte Adresse eintragen</span>
+                <span class="muted" id="addressDisplay"></span>
                 <button class="btn" type="button" id="btnCopyAddress">Adresse kopieren</button>
               </div>
             </div>
             <div class="field span-6">
               <label>Telefon / WhatsApp</label>
               <div class="control" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                <span class="muted" id="phoneDisplay">+49 000 000000</span>
+                <span class="muted" id="phoneDisplay"></span>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                   <button class="btn" type="button" id="btnCall">Anrufen</button>
                   <button class="btn primary" type="button" id="btnWhatsapp">WhatsApp</button>
@@ -884,7 +917,21 @@
             <div class="field span-12">
               <label>Map (optional)</label>
               <div class="control" style="min-height:220px; display:grid; place-items:center;">
-                <span class="muted">In Teil 2: eingebettete Map (Google/OSM) + Datenschutz-Hinweis.</span>
+                <div class="control" style="min-height:220px; padding:12px;">
+  <div id="mapConsent">
+    <div class="muted" style="margin-bottom:10px;">
+      Karte wird erst nach Zustimmung geladen (Datenschutz).
+    </div>
+    <button class="btn primary" type="button" id="btnLoadMap">Google Maps laden</button>
+    <div class="muted" style="margin-top:10px; font-size:12px;">
+      Mit dem Laden der Karte können Daten an Google übertragen werden.
+    </div>
+  </div>
+
+  <div id="mapFrame" class="hide" style="height:220px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.10);">
+    <!-- iframe wird per JS gesetzt -->
+  </div>
+</div>
               </div>
             </div>
           </div>
@@ -967,8 +1014,28 @@
 
   <script>
     // =========================
-    // Daten (Mock) – ersetzbar durch echte Datenquelle/Export
-    // =========================
+// Reichstein – Konfiguration (Firmendaten)
+// =========================
+const CONFIG = {
+  company: "Reichstein Automobile",
+  street: "Koloniestr. 91–93",
+  zipCity: "13359 Berlin",
+  phoneDisplay: "030 – 74374315",
+  phoneTel: "+493074374315",            // für tel: Links
+  email: "info@reichsteinautomobile.de",
+  whatsappE164: "493074374315",         // WhatsApp Landline (falls WA Business aktiv)
+  hours: [
+    ["Montag", "09:30 – 18:30"],
+    ["Dienstag", "09:30 – 18:30"],
+    ["Mittwoch", "09:30 – 18:30"],
+    ["Donnerstag", "09:30 – 18:30"],
+    ["Freitag", "09:30 – 18:30"],
+    ["Samstag", "09:30 – 15:00"],
+    ["Sonntag", "Geschlossen"]
+  ],
+  // Google Maps: Adresse als Query
+  mapsQuery: "Reichstein Automobile, Koloniestr. 91-93, 13359 Berlin"
+};
     const VEHICLES = [
       {
         id: "ra-1001",
@@ -1782,11 +1849,12 @@
         }
       });
       byId("btnCall").addEventListener("click", ()=>{
-        toast("Anrufen (Demo)", "In Teil 2: tel:-Link mit echter Nummer.");
-      });
+  window.location.href = `tel:${CONFIG.phoneTel}`;
+});
       byId("btnWhatsapp").addEventListener("click", ()=>{
-        toast("WhatsApp (Demo)", "In Teil 2: wa.me Link mit vordefiniertem Text.");
-      });
+  const text = encodeURIComponent(`Hallo ${CONFIG.company}, ich habe eine Frage zu einem Fahrzeug.`);
+  window.open(`https://wa.me/${CONFIG.whatsappE164}?text=${text}`, "_blank");
+});
     }
 
     // =========================
@@ -1796,6 +1864,40 @@
     bindEvents();
     setRoute(location.hash || "#/fahrzeuge");
     render();
+    function applyCompanyData(){
+  const addr = `${CONFIG.company}, ${CONFIG.street}, ${CONFIG.zipCity}`;
+
+  const a = byId("addressDisplay");
+  if(a) a.textContent = addr;
+
+  const p = byId("phoneDisplay");
+  if(p) p.textContent = CONFIG.phoneDisplay;
+
+  // Map Consent Loader
+  const btn = byId("btnLoadMap");
+  if(btn){
+    btn.addEventListener("click", ()=>{
+      const frame = byId("mapFrame");
+      const consent = byId("mapConsent");
+      if(frame && consent){
+        const q = encodeURIComponent(CONFIG.mapsQuery);
+        frame.innerHTML = `<iframe
+          title="Google Maps"
+          width="100%"
+          height="220"
+          style="border:0;"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=${q}&output=embed"></iframe>`;
+        consent.classList.add("hide");
+        frame.classList.remove("hide");
+      }
+    });
+  }
+}
+
+applyCompanyData();
   </script>
 </body>
 </html>
