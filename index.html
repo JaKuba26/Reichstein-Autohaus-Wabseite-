@@ -1,0 +1,1801 @@
+```html
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reichstein Automobile – Fahrzeugsuche</title>
+  <meta name="description" content="Moderne Fahrzeugsuche – edles Design, Filter, Favoriten, Vergleich, Anfragen & Inzahlungnahme." />
+  <style>
+    /* =========================
+       Reichstein Automobile – Single-File UI (Teil 1/2)
+       Edler, moderner Look (AutoHero-inspiriert, eigenständig)
+       ========================= */
+
+    :root{
+      --bg: #0b0f14;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.085);
+      --border: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --faint: rgba(255,255,255,.52);
+      --accent: #c7a24b; /* Gold */
+      --accent2:#7dd3fc; /* Cool highlight */
+      --danger:#fb7185;
+      --ok:#34d399;
+      --shadow: 0 22px 60px rgba(0,0,0,.55);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 14px;
+      --maxw: 1240px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(199,162,75,.25), transparent 60%),
+        radial-gradient(900px 500px at 95% 0%, rgba(125,211,252,.18), transparent 55%),
+        radial-gradient(900px 700px at 40% 120%, rgba(52,211,153,.10), transparent 60%),
+        linear-gradient(180deg, #070a0f 0%, #0b0f14 40%, #070a0f 100%);
+      overflow-x:hidden;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+
+    /* Layout */
+    .wrap{ width: min(var(--maxw), calc(100% - 32px)); margin: 0 auto; }
+    .topbar{
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(9,12,18,.78), rgba(9,12,18,.42));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+      gap: 14px;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap: 12px; min-width: 240px;
+    }
+    .logo{
+      width: 44px; height: 44px; border-radius: 14px;
+      display:grid; place-items:center;
+      background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .logo img{
+      width: 100%; height: 100%; object-fit: cover;
+      filter: saturate(1.1) contrast(1.05);
+    }
+    .brand-title{
+      display:flex; flex-direction:column; line-height:1.1;
+    }
+    .brand-title strong{ font-size: 14px; letter-spacing: .25px; }
+    .brand-title span{ font-size: 12px; color: var(--muted); }
+
+    .nav{
+      display:flex; align-items:center; gap: 8px; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      transition: .18s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill:hover{ background: rgba(255,255,255,.065); color: var(--text); transform: translateY(-1px); }
+    .pill.primary{
+      background: linear-gradient(145deg, rgba(199,162,75,.22), rgba(199,162,75,.10));
+      border-color: rgba(199,162,75,.32);
+      color: rgba(255,255,255,.92);
+    }
+    .pill.primary:hover{ background: linear-gradient(145deg, rgba(199,162,75,.30), rgba(199,162,75,.12)); }
+    .pill .dot{
+      width: 8px; height: 8px; border-radius: 999px; background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(199,162,75,.14);
+    }
+
+    /* Hero */
+    .hero{
+      padding: 26px 0 18px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .hero-card{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero-card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(700px 260px at 20% 10%, rgba(199,162,75,.22), transparent 60%),
+        radial-gradient(700px 260px at 90% 10%, rgba(125,211,252,.14), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .hero-inner{ position:relative; padding: 22px; }
+    .kicker{
+      display:inline-flex; gap: 8px; align-items:center;
+      font-size: 12px; color: var(--muted);
+      border: 1px solid rgba(199,162,75,.24);
+      background: rgba(199,162,75,.10);
+      padding: 6px 10px; border-radius: 999px;
+      width: fit-content;
+    }
+    .kicker .spark{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(199,162,75,.12);
+    }
+    h1{
+      margin: 12px 0 8px;
+      font-size: clamp(24px, 3.2vw, 38px);
+      letter-spacing: -0.02em;
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .hero-actions{
+      margin-top: 16px;
+      display:flex; gap: 10px; flex-wrap:wrap;
+    }
+
+    /* Right info card */
+    .info{
+      display:flex; flex-direction:column; gap: 12px;
+    }
+    .info .mini{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      padding: 16px;
+    }
+    .mini h3{ margin:0 0 10px; font-size: 14px; color: rgba(255,255,255,.88); }
+    .mini .row{ display:flex; justify-content:space-between; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(255,255,255,.07); }
+    .mini .row:first-of-type{ border-top: 0; }
+    .mini .row span{ color: var(--muted); font-size: 13px; }
+    .mini .row b{ font-weight: 600; font-size: 13px; color: rgba(255,255,255,.88); }
+    .badge{
+      display:inline-flex; gap: 8px; align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(125,211,252,.25);
+      background: rgba(125,211,252,.08);
+      color: rgba(255,255,255,.86);
+      font-size: 12px;
+      width: fit-content;
+    }
+
+    /* Search panel */
+    .panel{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      margin: 12px 0 18px;
+    }
+    .panel-head{
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    }
+    .panel-head h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,.88);
+      display:flex; align-items:center; gap: 10px;
+    }
+    .panel-head small{ color: var(--muted); font-weight: 500; }
+    .panel-body{ padding: 14px 16px 16px; }
+
+    .filters{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+    }
+    .field{
+      grid-column: span 3;
+      display:flex; flex-direction:column; gap: 6px;
+    }
+    .field.span-6{ grid-column: span 6; }
+    .field.span-4{ grid-column: span 4; }
+    .field.span-3{ grid-column: span 3; }
+    .field.span-2{ grid-column: span 2; }
+    .field.span-12{ grid-column: span 12; }
+
+    label{
+      font-size: 12px; color: var(--muted);
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 10px;
+    }
+
+    .control{
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      outline: none;
+      transition: .18s ease;
+    }
+    .control:focus{
+      border-color: rgba(199,162,75,.45);
+      box-shadow: 0 0 0 4px rgba(199,162,75,.14);
+    }
+
+    .range{
+      display:flex; gap: 10px;
+    }
+
+    .actions{
+      margin-top: 12px;
+      display:flex; justify-content:space-between; align-items:center; gap: 12px;
+      flex-wrap: wrap;
+    }
+    .actions-left{ display:flex; gap: 10px; flex-wrap: wrap; }
+    .btn{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.90);
+      padding: 10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      transition: .18s ease;
+      display:inline-flex; align-items:center; gap: 8px;
+      user-select:none;
+    }
+    .btn:hover{ background: rgba(255,255,255,.08); transform: translateY(-1px); }
+    .btn.primary{
+      background: linear-gradient(145deg, rgba(199,162,75,.26), rgba(199,162,75,.12));
+      border-color: rgba(199,162,75,.32);
+    }
+    .btn.primary:hover{
+      background: linear-gradient(145deg, rgba(199,162,75,.34), rgba(199,162,75,.14));
+    }
+    .btn.ghost{
+      background: transparent;
+      border-color: rgba(255,255,255,.12);
+      color: var(--muted);
+    }
+    .btn.danger{
+      border-color: rgba(251,113,133,.35);
+      background: rgba(251,113,133,.10);
+    }
+    .btn:active{ transform: translateY(0); }
+
+    .kpis{
+      display:flex; gap: 10px; flex-wrap:wrap; align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .chip b{ color: rgba(255,255,255,.88); font-weight: 650; }
+
+    /* Results grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card{
+      grid-column: span 4;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      position:relative;
+      transition: .18s ease;
+    }
+    .card:hover{ transform: translateY(-3px); border-color: rgba(255,255,255,.16); }
+    .thumb{
+      height: 190px;
+      background: rgba(255,255,255,.04);
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      filter: saturate(1.06) contrast(1.05);
+    }
+    .thumb::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .tagbar{
+      position:absolute; left: 10px; right: 10px; bottom: 10px;
+      display:flex; justify-content:space-between; gap: 8px;
+      align-items:flex-end;
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+      font-size: 12px;
+      backdrop-filter: blur(8px);
+    }
+    .tag .dot{
+      width:8px; height:8px; border-radius:999px; background: var(--accent2);
+      box-shadow: 0 0 0 4px rgba(125,211,252,.14);
+    }
+    .tag.price{
+      background: rgba(199,162,75,.18);
+      border-color: rgba(199,162,75,.30);
+    }
+
+    .card-body{ padding: 14px 14px 12px; }
+    .title{
+      display:flex; justify-content:space-between; align-items:flex-start; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .title h3{
+      margin:0;
+      font-size: 14px;
+      line-height: 1.3;
+      letter-spacing: .1px;
+    }
+    .title .sub{
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .iconbtn{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      width: 36px; height: 36px;
+      display:grid; place-items:center;
+      cursor:pointer;
+      transition: .18s ease;
+      flex: 0 0 auto;
+    }
+    .iconbtn:hover{ background: rgba(255,255,255,.08); transform: translateY(-1px); }
+    .iconbtn.active{
+      border-color: rgba(199,162,75,.40);
+      background: rgba(199,162,75,.16);
+    }
+    .specs{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .spec{
+      display:flex; flex-direction:column; gap: 2px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .spec span{ font-size: 11px; color: var(--muted); }
+    .spec b{ font-size: 12px; color: rgba(255,255,255,.88); font-weight: 650; }
+
+    .card-foot{
+      padding: 12px 14px 14px;
+      display:flex; gap: 8px; flex-wrap:wrap;
+    }
+
+    /* Pagination */
+    .pager{
+      display:flex; justify-content:space-between; align-items:center; gap: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.03);
+      padding: 12px 14px;
+      margin-bottom: 26px;
+    }
+
+    /* Modals / Drawer */
+    .overlay{
+      position:fixed; inset:0; z-index: 100;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(8px);
+      display:none;
+      padding: 18px;
+    }
+    .overlay.show{ display:block; }
+    .modal{
+      width: min(980px, 100%);
+      margin: 0 auto;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(145deg, rgba(12,16,22,.95), rgba(9,12,18,.92));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      max-height: calc(100vh - 36px);
+      display:flex;
+      flex-direction:column;
+    }
+    .modal-head{
+      display:flex; justify-content:space-between; align-items:center; gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .modal-head h3{ margin:0; font-size: 14px; color: rgba(255,255,255,.90); }
+    .modal-body{
+      padding: 14px 16px 16px;
+      overflow:auto;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+    }
+    .gallery{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      background: rgba(255,255,255,.03);
+    }
+    .gallery-main{ height: 320px; background: rgba(255,255,255,.04); position:relative; }
+    .gallery-main img{ width:100%; height:100%; object-fit:cover; }
+    .gallery-strip{
+      display:flex; gap: 8px;
+      padding: 10px;
+      overflow:auto;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .thumb2{
+      width: 92px; height: 62px; flex: 0 0 auto;
+      border-radius: 12px; overflow:hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+      opacity:.85;
+      transition: .18s ease;
+    }
+    .thumb2:hover{ opacity:1; transform: translateY(-1px); }
+    .thumb2.active{ border-color: rgba(199,162,75,.45); opacity:1; }
+    .thumb2 img{ width:100%; height:100%; object-fit:cover; }
+
+    .sidebox{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      position: sticky;
+      top: 10px;
+      height: fit-content;
+    }
+    .pricebig{
+      font-size: 22px;
+      font-weight: 780;
+      letter-spacing: -.01em;
+    }
+    .muted{ color: var(--muted); }
+    .list{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .li{
+      padding: 9px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.035);
+      display:flex; justify-content:space-between; gap: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,.86);
+    }
+    .li span{ color: var(--muted); }
+
+    /* Sections */
+    .section-title{
+      display:flex; align-items:center; justify-content:space-between; gap: 12px;
+      margin: 10px 0 10px;
+    }
+    .section-title h2{ margin:0; font-size: 14px; color: rgba(255,255,255,.88); }
+    .divider{ height:1px; background: rgba(255,255,255,.08); margin: 12px 0; }
+
+    /* Footer */
+    footer{
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      padding: 22px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .foot-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 14px;
+      align-items:start;
+    }
+    .foot-grid h4{ margin:0 0 10px; color: rgba(255,255,255,.86); font-size: 12px; }
+    .foot-grid a{ color: var(--muted); display:block; padding: 4px 0; }
+    .foot-grid a:hover{ color: rgba(255,255,255,.88); }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .card{ grid-column: span 6; }
+      .two-col{ grid-template-columns: 1fr; }
+      .sidebox{ position: static; }
+      .field{ grid-column: span 6; }
+      .field.span-2{ grid-column: span 6; }
+      .field.span-3{ grid-column: span 6; }
+      .field.span-4{ grid-column: span 6; }
+      .field.span-6{ grid-column: span 12; }
+      .foot-grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px){
+      .brand{ min-width: auto; }
+      .card{ grid-column: span 12; }
+      .specs{ grid-template-columns: repeat(2, 1fr); }
+      .filters{ grid-template-columns: repeat(12, 1fr); }
+      .field{ grid-column: span 12; }
+      .range{ flex-direction:column; }
+      .pager{ flex-direction:column; align-items:stretch; }
+      .nav{ justify-content:flex-end; }
+    }
+
+    /* Utility */
+    .hide{ display:none !important; }
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+    .toast{
+      position: fixed; right: 16px; bottom: 16px; z-index: 200;
+      display:flex; flex-direction:column; gap: 10px;
+      pointer-events:none;
+    }
+    .toast .t{
+      pointer-events:auto;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(12,16,22,.92);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow2);
+      max-width: 360px;
+      font-size: 12px;
+      color: rgba(255,255,255,.88);
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+    }
+    .t small{ color: var(--muted); display:block; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#/fahrzeuge" id="homeLink" aria-label="Zur Fahrzeugsuche">
+        <div class="logo" title="Reichstein Automobile">
+          <!-- LOGO: Lege dein Logo als public/logo.svg (oder ersetze hier die URL) -->
+          <img src="logo.svg" alt="Reichstein Automobile Logo" onerror="this.style.display='none'; this.parentElement.textContent='RA'; this.parentElement.style.fontWeight='800';" />
+        </div>
+        <div class="brand-title">
+          <strong>Reichstein Automobile</strong>
+          <span>Premium Gebrauchtwagen • Modern • Transparent</span>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a class="pill" href="#/fahrzeuge" id="navCars"><span class="dot"></span>Fahrzeuge</a>
+        <a class="pill" href="#/inzahlungnahme" id="navTrade">Inzahlungnahme</a>
+        <a class="pill" href="#/kontakt" id="navContact">Kontakt</a>
+        <a class="pill" href="#/favoriten" id="navFav">Favoriten <span id="favCount" class="chip"><b>0</b></span></a>
+        <a class="pill primary" href="#/vergleich" id="navCompare">Vergleich <span id="cmpCount" class="chip"><b>0</b></span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="hero-inner">
+            <div class="kicker"><span class="spark"></span> Edle Fahrzeugsuche – wie ein Online-Autohaus</div>
+            <h1>Finde dein nächstes Fahrzeug – schnell, modern, transparent.</h1>
+            <p>
+              Filter nach Preis, Marke, Kilometer, Erstzulassung, Getriebe, Kraftstoff & mehr. Speichere Favoriten,
+              vergleiche bis zu 3 Fahrzeuge und sende eine Anfrage in Sekunden.
+            </p>
+            <div class="hero-actions">
+              <button class="btn primary" id="btnScrollToResults">Jetzt Fahrzeuge ansehen</button>
+              <button class="btn ghost" id="btnOpenTradeFromHero">Inzahlungnahme starten</button>
+              <button class="btn" id="btnQuickContact">Schnellkontakt</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="info">
+          <div class="mini">
+            <h3>Heute im Überblick</h3>
+            <div class="row"><span>Fahrzeuge im Bestand</span><b id="kpiTotal">–</b></div>
+            <div class="row"><span>Durchschnittspreis</span><b id="kpiAvg">–</b></div>
+            <div class="row"><span>Neueste Zugänge</span><b id="kpiNew">–</b></div>
+            <div class="badge">✔ Finanzierung/Anfrage in 1 Minute • ✔ Favoriten • ✔ Vergleich</div>
+          </div>
+
+          <div class="mini">
+            <h3>Öffnungszeiten (Beispiel)</h3>
+            <div class="row"><span>Mo–Fr</span><b>09:00–18:00</b></div>
+            <div class="row"><span>Sa</span><b>10:00–14:00</b></div>
+            <div class="row"><span>So</span><b>geschlossen</b></div>
+            <div class="badge" style="border-color: rgba(199,162,75,.25); background: rgba(199,162,75,.08);">☎ Telefon & WhatsApp CTA in den Details</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUTED VIEWS -->
+    <section id="viewCars">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Fahrzeugsuche <small>Filter • Sortierung • Favoriten • Vergleich</small></h2>
+          <div class="kpis">
+            <span class="chip">Treffer: <b id="hitCount">0</b></span>
+            <span class="chip">Seite: <b id="pageInfo">1</b></span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <form id="filterForm" class="filters" autocomplete="off">
+            <div class="field span-6">
+              <label for="q">Suche (Marke / Modell / Stichwort)</label>
+              <input class="control" id="q" name="q" placeholder="z.B. BMW 3er, Avant, AMG, Panorama..." />
+            </div>
+
+            <div class="field span-3">
+              <label for="make">Marke</label>
+              <select class="control" id="make" name="make"></select>
+            </div>
+
+            <div class="field span-3">
+              <label for="fuel">Kraftstoff</label>
+              <select class="control" id="fuel" name="fuel"></select>
+            </div>
+
+            <div class="field span-3">
+              <label for="gear">Getriebe</label>
+              <select class="control" id="gear" name="gear"></select>
+            </div>
+
+            <div class="field span-3">
+              <label for="yearMin">Erstzulassung (von)</label>
+              <select class="control" id="yearMin" name="yearMin"></select>
+            </div>
+
+            <div class="field span-3">
+              <label for="yearMax">Erstzulassung (bis)</label>
+              <select class="control" id="yearMax" name="yearMax"></select>
+            </div>
+
+            <div class="field span-3">
+              <label>Preis (€)</label>
+              <div class="range">
+                <input class="control" id="priceMin" name="priceMin" placeholder="min" inputmode="numeric" />
+                <input class="control" id="priceMax" name="priceMax" placeholder="max" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="field span-3">
+              <label>Kilometer</label>
+              <div class="range">
+                <input class="control" id="kmMin" name="kmMin" placeholder="min" inputmode="numeric" />
+                <input class="control" id="kmMax" name="kmMax" placeholder="max" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="field span-3">
+              <label for="sort">Sortierung</label>
+              <select class="control" id="sort" name="sort">
+                <option value="newest">Neueste zuerst</option>
+                <option value="price_asc">Preis aufsteigend</option>
+                <option value="price_desc">Preis absteigend</option>
+                <option value="km_asc">KM aufsteigend</option>
+                <option value="km_desc">KM absteigend</option>
+                <option value="year_desc">EZ neu → alt</option>
+                <option value="year_asc">EZ alt → neu</option>
+              </select>
+            </div>
+
+            <div class="field span-3">
+              <label for="perPage">Pro Seite</label>
+              <select class="control" id="perPage" name="perPage">
+                <option>9</option>
+                <option>12</option>
+                <option>18</option>
+              </select>
+            </div>
+
+            <div class="field span-12">
+              <div class="actions">
+                <div class="actions-left">
+                  <button type="submit" class="btn primary">Filter anwenden</button>
+                  <button type="button" class="btn ghost" id="btnReset">Zurücksetzen</button>
+                  <button type="button" class="btn" id="btnOnlyFav">Nur Favoriten</button>
+                  <button type="button" class="btn" id="btnOnlyNew">Neu (≤ 14 Tage)</button>
+                </div>
+                <div class="kpis">
+                  <span class="chip">Favoriten: <b id="kpiFav">0</b></span>
+                  <span class="chip">Vergleich: <b id="kpiCmp">0</b></span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <h2>Ergebnisse</h2>
+        <div class="kpis">
+          <span class="chip">Tipp: Klick auf ein Fahrzeug für Details</span>
+        </div>
+      </div>
+
+      <div class="grid" id="resultsGrid" aria-live="polite"></div>
+
+      <div class="pager">
+        <div class="kpis">
+          <span class="chip">Anzeige: <b id="showingInfo">–</b></span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn" id="btnPrev">← Zurück</button>
+          <button class="btn" id="btnNext">Weiter →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Favoriten view -->
+    <section id="viewFav" class="hide">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Favoriten <small>Deine gemerkten Fahrzeuge</small></h2>
+          <div class="kpis">
+            <span class="chip">Gespeichert: <b id="favCount2">0</b></span>
+            <button class="btn danger" id="btnClearFav">Favoriten löschen</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="grid" id="favGrid"></div>
+          <div class="muted" id="favEmpty">Noch keine Favoriten. Öffne die Fahrzeugsuche und klicke auf das ★.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vergleich view -->
+    <section id="viewCompare" class="hide">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Vergleich <small>Bis zu 3 Fahrzeuge nebeneinander</small></h2>
+          <div class="kpis">
+            <span class="chip">Ausgewählt: <b id="cmpCount2">0</b></span>
+            <button class="btn ghost" id="btnClearCmp">Vergleich leeren</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="cmpWrap"></div>
+          <div class="muted" id="cmpEmpty">Noch kein Vergleich. In der Fahrzeugsuche „Vergleich“ hinzufügen.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontakt view -->
+    <section id="viewContact" class="hide">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Kontakt <small>Anfrage senden • Probefahrt • Rückruf</small></h2>
+        </div>
+        <div class="panel-body">
+          <form id="contactForm" class="filters">
+            <div class="field span-4">
+              <label for="cName">Name</label>
+              <input class="control" id="cName" required placeholder="Max Mustermann" />
+            </div>
+            <div class="field span-4">
+              <label for="cEmail">E-Mail</label>
+              <input class="control" id="cEmail" type="email" required placeholder="max@mail.de" />
+            </div>
+            <div class="field span-4">
+              <label for="cPhone">Telefon (optional)</label>
+              <input class="control" id="cPhone" placeholder="+49..." />
+            </div>
+            <div class="field span-12">
+              <label for="cMsg">Nachricht</label>
+              <textarea class="control" id="cMsg" rows="5" required placeholder="Worum geht es? Wunschfahrzeug, Finanzierung, Probefahrt..."></textarea>
+            </div>
+            <div class="field span-12">
+              <div class="actions">
+                <div class="actions-left">
+                  <button class="btn primary" type="submit">Nachricht senden</button>
+                  <button class="btn ghost" type="button" id="btnContactDemo">Demo ausfüllen</button>
+                </div>
+                <div class="kpis">
+                  <span class="chip">Hinweis: In Teil 2 ist E-Mail-Versand als Beispiel enthalten.</span>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="filters">
+            <div class="field span-6">
+              <label>Adresse</label>
+              <div class="control" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <span class="muted">Hier deine echte Adresse eintragen</span>
+                <button class="btn" type="button" id="btnCopyAddress">Adresse kopieren</button>
+              </div>
+            </div>
+            <div class="field span-6">
+              <label>Telefon / WhatsApp</label>
+              <div class="control" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <span class="muted" id="phoneDisplay">+49 000 000000</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                  <button class="btn" type="button" id="btnCall">Anrufen</button>
+                  <button class="btn primary" type="button" id="btnWhatsapp">WhatsApp</button>
+                </div>
+              </div>
+            </div>
+            <div class="field span-12">
+              <label>Map (optional)</label>
+              <div class="control" style="min-height:220px; display:grid; place-items:center;">
+                <span class="muted">In Teil 2: eingebettete Map (Google/OSM) + Datenschutz-Hinweis.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Inzahlungnahme view -->
+    <section id="viewTrade" class="hide">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Inzahlungnahme <small>Mehrstufig • Daten • Zustand • Upload • Abschicken</small></h2>
+          <div class="kpis">
+            <span class="chip">Schritt: <b id="tradeStepInfo">1</b>/4</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="tradeWizard"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rechtliches -->
+    <section id="viewLegal" class="hide">
+      <div class="panel">
+        <div class="panel-head">
+          <h2 id="legalTitle">Impressum</h2>
+        </div>
+        <div class="panel-body" id="legalBody">
+          <!-- Teil 2 füllt Inhalte + Template ein -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <h4>Reichstein Automobile</h4>
+          <div class="muted">Edle Online-Präsenz • Fahrzeugsuche • Inzahlungnahme • Kontakt</div>
+          <div class="muted" style="margin-top:10px;">© <span id="yearNow"></span> Reichstein Automobile</div>
+        </div>
+        <div>
+          <h4>Navigation</h4>
+          <a href="#/fahrzeuge">Fahrzeuge</a>
+          <a href="#/favoriten">Favoriten</a>
+          <a href="#/vergleich">Vergleich</a>
+          <a href="#/inzahlungnahme">Inzahlungnahme</a>
+          <a href="#/kontakt">Kontakt</a>
+        </div>
+        <div>
+          <h4>Rechtliches</h4>
+          <a href="#/impressum">Impressum</a>
+          <a href="#/datenschutz">Datenschutz</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vehicle Details Modal -->
+  <div class="overlay" id="detailsOverlay" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="detailsTitle">Fahrzeugdetails</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="btnDetailsFav">★ Favorit</button>
+          <button class="btn" id="btnDetailsCmp">⇄ Vergleich</button>
+          <button class="btn ghost" id="btnCloseDetails">Schließen ✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="detailsBody">
+        <!-- Teil 2: Details-Inhalt wird dynamisch gebaut -->
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // =========================
+    // Daten (Mock) – ersetzbar durch echte Datenquelle/Export
+    // =========================
+    const VEHICLES = [
+      {
+        id: "ra-1001",
+        make: "BMW",
+        model: "320d Touring",
+        trim: "M Sport",
+        price: 28990,
+        year: 2020,
+        km: 69900,
+        fuel: "Diesel",
+        gear: "Automatik",
+        power: 190,
+        color: "Schwarz",
+        doors: 5,
+        owners: 2,
+        firstReg: "2020-05",
+        createdAt: daysAgo(3),
+        images: [
+          "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["LED-Scheinwerfer", "Navigation", "Sportfahrwerk", "Sitzheizung", "PDC", "Tempomat", "Bluetooth"],
+        notes: "Scheckheft gepflegt, Top Zustand. Finanzierung möglich."
+      },
+      {
+        id: "ra-1002",
+        make: "Audi",
+        model: "A4 Avant",
+        trim: "S line",
+        price: 26990,
+        year: 2019,
+        km: 84500,
+        fuel: "Benzin",
+        gear: "Automatik",
+        power: 190,
+        color: "Grau",
+        doors: 5,
+        owners: 1,
+        firstReg: "2019-09",
+        createdAt: daysAgo(9),
+        images: [
+          "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1517524206127-48bbd363f3f7?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["Virtual Cockpit", "Navigation", "S line", "Sitzheizung", "Kamera", "Keyless", "CarPlay"],
+        notes: "Sehr gepflegt, Nichtraucherfahrzeug."
+      },
+      {
+        id: "ra-1003",
+        make: "Mercedes-Benz",
+        model: "C 220d",
+        trim: "AMG Line",
+        price: 31990,
+        year: 2021,
+        km: 49900,
+        fuel: "Diesel",
+        gear: "Automatik",
+        power: 200,
+        color: "Weiß",
+        doors: 4,
+        owners: 1,
+        firstReg: "2021-03",
+        createdAt: daysAgo(1),
+        images: [
+          "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1520052205864-92d242b3a76b?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["AMG Line", "MBUX", "LED", "Sitzheizung", "Tempomat", "PDC", "Bluetooth"],
+        notes: "Top Ausstattung. Probefahrt nach Termin."
+      },
+      {
+        id: "ra-1004",
+        make: "Volkswagen",
+        model: "Golf VII",
+        trim: "Highline",
+        price: 15990,
+        year: 2018,
+        km: 98000,
+        fuel: "Benzin",
+        gear: "Schaltgetriebe",
+        power: 125,
+        color: "Blau",
+        doors: 5,
+        owners: 2,
+        firstReg: "2018-06",
+        createdAt: daysAgo(22),
+        images: [
+          "https://images.unsplash.com/photo-1541443131876-44b03de101c5?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["Navigation", "Sitzheizung", "Tempomat", "Bluetooth", "PDC"],
+        notes: "Preis-Leistung stark. Sofort verfügbar."
+      },
+      {
+        id: "ra-1005",
+        make: "Tesla",
+        model: "Model 3",
+        trim: "Long Range",
+        price: 34990,
+        year: 2020,
+        km: 65000,
+        fuel: "Elektro",
+        gear: "Automatik",
+        power: 351,
+        color: "Rot",
+        doors: 4,
+        owners: 1,
+        firstReg: "2020-11",
+        createdAt: daysAgo(12),
+        images: [
+          "https://images.unsplash.com/photo-1619767886558-efdc259cde1d?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1603386329225-868f9b1ee6d9?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["Autopilot", "Glasdach", "Kamera", "Navi", "App-Steuerung"],
+        notes: "Sehr guter Zustand. Ladeequipment dabei."
+      },
+      {
+        id: "ra-1006",
+        make: "Porsche",
+        model: "Macan",
+        trim: "S",
+        price: 58900,
+        year: 2019,
+        km: 72000,
+        fuel: "Benzin",
+        gear: "Automatik",
+        power: 354,
+        color: "Schwarz",
+        doors: 5,
+        owners: 2,
+        firstReg: "2019-02",
+        createdAt: daysAgo(5),
+        images: [
+          "https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=1400&q=70",
+          "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1400&q=70"
+        ],
+        features: ["Sport Chrono", "PASM", "Panorama", "Kamera", "Sitzbelüftung", "Navi"],
+        notes: "Premium SUV, sehr gepflegt."
+      }
+    ];
+
+    // =========================
+    // State
+    // =========================
+    const state = {
+      route: "#/fahrzeuge",
+      page: 1,
+      perPage: 9,
+      onlyFav: false,
+      onlyNew: false,
+      selectedVehicleId: null,
+      fav: new Set(loadLS("ra_fav", [])),
+      cmp: new Set(loadLS("ra_cmp", []))
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    function daysAgo(n){
+      const d = new Date();
+      d.setDate(d.getDate() - n);
+      return d.toISOString();
+    }
+    function formatEUR(n){
+      return new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR", maximumFractionDigits: 0 }).format(n);
+    }
+    function formatKM(n){
+      return new Intl.NumberFormat("de-DE").format(n) + " km";
+    }
+    function clampInt(val, min, max){
+      const n = parseInt(String(val||"").replace(/[^\d]/g,""), 10);
+      if (Number.isNaN(n)) return null;
+      return Math.max(min, Math.min(max, n));
+    }
+    function uniq(arr){ return Array.from(new Set(arr)); }
+    function byId(id){ return document.getElementById(id); }
+    function saveLS(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+    function loadLS(key, fallback){
+      try{
+        const v = JSON.parse(localStorage.getItem(key) || "null");
+        return v ?? fallback;
+      }catch{ return fallback; }
+    }
+    function toast(msg, sub=""){
+      const wrap = byId("toast");
+      const el = document.createElement("div");
+      el.className = "t";
+      el.innerHTML = `<div><div>${escapeHtml(msg)}</div>${sub?`<small>${escapeHtml(sub)}</small>`:""}</div>
+                      <button class="iconbtn" aria-label="Toast schließen" style="width:32px;height:32px;">✕</button>`;
+      el.querySelector("button").onclick = ()=> el.remove();
+      wrap.appendChild(el);
+      setTimeout(()=>{ if (el.isConnected) el.remove(); }, 4200);
+    }
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+    }
+
+    // =========================
+    // Init: Populate select options
+    // =========================
+    function initFilters(){
+      const makes = ["Alle", ...uniq(VEHICLES.map(v=>v.make)).sort()];
+      const fuels = ["Alle", ...uniq(VEHICLES.map(v=>v.fuel)).sort()];
+      const gears = ["Alle", ...uniq(VEHICLES.map(v=>v.gear)).sort()];
+
+      const years = uniq(VEHICLES.map(v=>v.year)).sort((a,b)=>a-b);
+      const yearOpts = ["Alle", ...years];
+
+      fillSelect("make", makes);
+      fillSelect("fuel", fuels);
+      fillSelect("gear", gears);
+      fillSelect("yearMin", yearOpts);
+      fillSelect("yearMax", yearOpts);
+
+      // defaults
+      byId("make").value = "Alle";
+      byId("fuel").value = "Alle";
+      byId("gear").value = "Alle";
+      byId("yearMin").value = "Alle";
+      byId("yearMax").value = "Alle";
+      byId("perPage").value = String(state.perPage);
+    }
+
+    function fillSelect(id, options){
+      const sel = byId(id);
+      sel.innerHTML = "";
+      for(const opt of options){
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        sel.appendChild(o);
+      }
+    }
+
+    // =========================
+    // Filtering, Sorting, Pagination
+    // =========================
+    function getFilters(){
+      const q = (byId("q").value || "").trim().toLowerCase();
+      const make = byId("make").value;
+      const fuel = byId("fuel").value;
+      const gear = byId("gear").value;
+      const yearMin = byId("yearMin").value === "Alle" ? null : parseInt(byId("yearMin").value, 10);
+      const yearMax = byId("yearMax").value === "Alle" ? null : parseInt(byId("yearMax").value, 10);
+      const priceMin = clampInt(byId("priceMin").value, 0, 9999999);
+      const priceMax = clampInt(byId("priceMax").value, 0, 9999999);
+      const kmMin = clampInt(byId("kmMin").value, 0, 9999999);
+      const kmMax = clampInt(byId("kmMax").value, 0, 9999999);
+      const sort = byId("sort").value;
+      const perPage = parseInt(byId("perPage").value, 10) || 9;
+
+      return { q, make, fuel, gear, yearMin, yearMax, priceMin, priceMax, kmMin, kmMax, sort, perPage };
+    }
+
+    function applyQuery(list, q){
+      if(!q) return list;
+      return list.filter(v=>{
+        const hay = `${v.make} ${v.model} ${v.trim} ${v.fuel} ${v.gear} ${v.notes} ${v.features.join(" ")}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function applyFilters(){
+      const f = getFilters();
+      state.perPage = f.perPage;
+
+      let list = [...VEHICLES];
+
+      if(state.onlyFav){
+        list = list.filter(v=> state.fav.has(v.id));
+      }
+      if(state.onlyNew){
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 14);
+        list = list.filter(v=> new Date(v.createdAt) >= cutoff);
+      }
+
+      list = applyQuery(list, f.q);
+      if(f.make !== "Alle") list = list.filter(v=> v.make === f.make);
+      if(f.fuel !== "Alle") list = list.filter(v=> v.fuel === f.fuel);
+      if(f.gear !== "Alle") list = list.filter(v=> v.gear === f.gear);
+      if(f.yearMin != null) list = list.filter(v=> v.year >= f.yearMin);
+      if(f.yearMax != null) list = list.filter(v=> v.year <= f.yearMax);
+      if(f.priceMin != null) list = list.filter(v=> v.price >= f.priceMin);
+      if(f.priceMax != null) list = list.filter(v=> v.price <= f.priceMax);
+      if(f.kmMin != null) list = list.filter(v=> v.km >= f.kmMin);
+      if(f.kmMax != null) list = list.filter(v=> v.km <= f.kmMax);
+
+      list = sortVehicles(list, f.sort);
+
+      return list;
+    }
+
+    function sortVehicles(list, mode){
+      const copy = [...list];
+      switch(mode){
+        case "price_asc": return copy.sort((a,b)=>a.price-b.price);
+        case "price_desc": return copy.sort((a,b)=>b.price-a.price);
+        case "km_asc": return copy.sort((a,b)=>a.km-b.km);
+        case "km_desc": return copy.sort((a,b)=>b.km-a.km);
+        case "year_asc": return copy.sort((a,b)=>a.year-b.year);
+        case "year_desc": return copy.sort((a,b)=>b.year-a.year);
+        case "newest":
+        default:
+          return copy.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+      }
+    }
+
+    function paginate(list){
+      const total = list.length;
+      const perPage = state.perPage;
+      const pages = Math.max(1, Math.ceil(total / perPage));
+      state.page = Math.max(1, Math.min(state.page, pages));
+      const start = (state.page - 1) * perPage;
+      const end = start + perPage;
+      return { slice: list.slice(start, end), total, pages, start, end: Math.min(end, total) };
+    }
+
+    // =========================
+    // Render
+    // =========================
+    function render(){
+      // KPIs
+      byId("yearNow").textContent = new Date().getFullYear();
+      byId("kpiTotal").textContent = String(VEHICLES.length);
+      byId("kpiAvg").textContent = formatEUR(Math.round(VEHICLES.reduce((s,v)=>s+v.price,0)/VEHICLES.length));
+      byId("kpiNew").textContent = String(VEHICLES.filter(v=>{
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-14);
+        return new Date(v.createdAt) >= cutoff;
+      }).length);
+
+      // counts
+      const favN = state.fav.size;
+      const cmpN = state.cmp.size;
+      byId("favCount").querySelector("b").textContent = String(favN);
+      byId("cmpCount").querySelector("b").textContent = String(cmpN);
+      byId("kpiFav").textContent = String(favN);
+      byId("kpiCmp").textContent = String(cmpN);
+      byId("favCount2").textContent = String(favN);
+      byId("cmpCount2").textContent = String(cmpN);
+
+      // route views
+      setActiveRouteView();
+
+      // cars view render
+      if(state.route === "#/fahrzeuge"){
+        const list = applyFilters();
+        const { slice, total, pages, start, end } = paginate(list);
+
+        byId("hitCount").textContent = String(total);
+        byId("pageInfo").textContent = `${state.page} / ${pages}`;
+        byId("showingInfo").textContent = total ? `${start+1}–${end} von ${total}` : "0";
+        renderGrid(byId("resultsGrid"), slice);
+
+        byId("btnPrev").disabled = (state.page <= 1);
+        byId("btnNext").disabled = (state.page >= pages);
+        byId("btnPrev").style.opacity = byId("btnPrev").disabled ? .55 : 1;
+        byId("btnNext").style.opacity = byId("btnNext").disabled ? .55 : 1;
+      }
+
+      // favorites view
+      if(state.route === "#/favoriten"){
+        const list = VEHICLES.filter(v=> state.fav.has(v.id));
+        byId("favEmpty").classList.toggle("hide", list.length !== 0);
+        renderGrid(byId("favGrid"), list);
+      }
+
+      // compare view
+      if(state.route === "#/vergleich"){
+        renderCompare();
+      }
+    }
+
+    function renderGrid(container, list){
+      container.innerHTML = "";
+      for(const v of list){
+        const el = document.createElement("article");
+        el.className = "card";
+        el.innerHTML = `
+          <div class="thumb" role="button" tabindex="0" aria-label="Details öffnen: ${escapeHtml(v.make)} ${escapeHtml(v.model)}">
+            <img src="${escapeHtml(v.images?.[0] || "")}" alt="${escapeHtml(v.make+" "+v.model)}" loading="lazy">
+            <div class="tagbar">
+              <div class="tag"><span class="dot"></span>${escapeHtml(v.fuel)} • ${escapeHtml(v.gear)}</div>
+              <div class="tag price">${escapeHtml(formatEUR(v.price))}</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="title">
+              <div>
+                <h3>${escapeHtml(v.make)} ${escapeHtml(v.model)} <span class="muted">• ${escapeHtml(v.trim)}</span></h3>
+                <div class="sub">${escapeHtml(String(v.year))} • ${escapeHtml(formatKM(v.km))} • ${escapeHtml(v.power)} PS</div>
+              </div>
+              <button class="iconbtn ${state.fav.has(v.id) ? "active":""}" aria-label="Favorit" title="Favorit" data-fav="${escapeHtml(v.id)}">★</button>
+            </div>
+
+            <div class="specs">
+              <div class="spec"><span>Erstzulassung</span><b>${escapeHtml(v.firstReg)}</b></div>
+              <div class="spec"><span>Farbe</span><b>${escapeHtml(v.color)}</b></div>
+              <div class="spec"><span>Vorbesitzer</span><b>${escapeHtml(String(v.owners))}</b></div>
+            </div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary" data-open="${escapeHtml(v.id)}">Details</button>
+            <button class="btn ${state.cmp.has(v.id) ? "primary":""}" data-cmp="${escapeHtml(v.id)}">⇄ Vergleich</button>
+            <button class="btn" data-ask="${escapeHtml(v.id)}">Anfrage</button>
+          </div>
+        `;
+
+        // thumb click open
+        const thumb = el.querySelector(".thumb");
+        thumb.addEventListener("click", ()=> openDetails(v.id));
+        thumb.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openDetails(v.id);} });
+
+        // buttons
+        el.querySelector("[data-open]").addEventListener("click", ()=> openDetails(v.id));
+        el.querySelector("[data-ask]").addEventListener("click", ()=> quickInquiry(v.id));
+        el.querySelector("[data-fav]").addEventListener("click", (e)=>{ e.stopPropagation(); toggleFav(v.id); });
+        el.querySelector("[data-cmp]").addEventListener("click", (e)=>{ e.stopPropagation(); toggleCmp(v.id); });
+
+        container.appendChild(el);
+      }
+    }
+
+    // =========================
+    // Favorites / Compare
+    // =========================
+    function toggleFav(id){
+      if(state.fav.has(id)){
+        state.fav.delete(id);
+        toast("Aus Favoriten entfernt", id);
+      }else{
+        state.fav.add(id);
+        toast("Zu Favoriten hinzugefügt", id);
+      }
+      saveLS("ra_fav", Array.from(state.fav));
+      render();
+    }
+
+    function toggleCmp(id){
+      if(state.cmp.has(id)){
+        state.cmp.delete(id);
+        toast("Aus Vergleich entfernt", id);
+      }else{
+        if(state.cmp.size >= 3){
+          toast("Vergleich ist voll", "Maximal 3 Fahrzeuge gleichzeitig.");
+          return;
+        }
+        state.cmp.add(id);
+        toast("Zum Vergleich hinzugefügt", id);
+      }
+      saveLS("ra_cmp", Array.from(state.cmp));
+      render();
+    }
+
+    function renderCompare(){
+      const wrap = byId("cmpWrap");
+      const ids = Array.from(state.cmp);
+      const cars = ids.map(id=> VEHICLES.find(v=>v.id===id)).filter(Boolean);
+
+      byId("cmpEmpty").classList.toggle("hide", cars.length !== 0);
+
+      if(!cars.length){
+        wrap.innerHTML = "";
+        return;
+      }
+
+      // Build comparison table
+      const rows = [
+        ["Preis", (v)=>formatEUR(v.price)],
+        ["Marke/Modell", (v)=>`${v.make} ${v.model}`],
+        ["Variante", (v)=>v.trim],
+        ["Erstzulassung", (v)=>String(v.year)],
+        ["Kilometer", (v)=>formatKM(v.km)],
+        ["Kraftstoff", (v)=>v.fuel],
+        ["Getriebe", (v)=>v.gear],
+        ["Leistung", (v)=>`${v.power} PS`],
+        ["Farbe", (v)=>v.color],
+        ["Vorbesitzer", (v)=>String(v.owners)]
+      ];
+
+      const header = `
+        <div class="grid" style="margin:0;">
+          ${cars.map(v=>`
+            <div class="card" style="grid-column: span 4;">
+              <div class="thumb">
+                <img src="${escapeHtml(v.images?.[0]||"")}" alt="${escapeHtml(v.make+" "+v.model)}">
+                <div class="tagbar">
+                  <div class="tag"><span class="dot"></span>${escapeHtml(v.fuel)} • ${escapeHtml(v.gear)}</div>
+                  <div class="tag price">${escapeHtml(formatEUR(v.price))}</div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="title">
+                  <div>
+                    <h3>${escapeHtml(v.make)} ${escapeHtml(v.model)}</h3>
+                    <div class="sub">${escapeHtml(v.trim)} • ${escapeHtml(String(v.year))}</div>
+                  </div>
+                  <button class="iconbtn" title="Entfernen" data-rm="${escapeHtml(v.id)}">✕</button>
+                </div>
+                <div class="card-foot">
+                  <button class="btn primary" data-open="${escapeHtml(v.id)}">Details</button>
+                  <button class="btn" data-ask="${escapeHtml(v.id)}">Anfrage</button>
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      const body = `
+        <div class="panel" style="margin-top:12px;">
+          <div class="panel-head"><h2>Vergleichsdaten <small>Übersicht</small></h2></div>
+          <div class="panel-body" style="overflow:auto;">
+            <div style="min-width:760px;">
+              ${rows.map(([label, fn])=>`
+                <div class="li" style="grid-template-columns:1fr; margin-bottom:8px;">
+                  <div style="display:grid; grid-template-columns: 220px repeat(${cars.length}, 1fr); gap:10px; align-items:center;">
+                    <span>${escapeHtml(label)}</span>
+                    ${cars.map(v=>`<b style="font-weight:700;">${escapeHtml(fn(v))}</b>`).join("")}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+
+      wrap.innerHTML = header + body;
+
+      wrap.querySelectorAll("[data-open]").forEach(btn=>{
+        btn.addEventListener("click", ()=> openDetails(btn.getAttribute("data-open")));
+      });
+      wrap.querySelectorAll("[data-ask]").forEach(btn=>{
+        btn.addEventListener("click", ()=> quickInquiry(btn.getAttribute("data-ask")));
+      });
+      wrap.querySelectorAll("[data-rm]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          state.cmp.delete(btn.getAttribute("data-rm"));
+          saveLS("ra_cmp", Array.from(state.cmp));
+          render();
+        });
+      });
+    }
+
+    // =========================
+    // Details modal (Teil 2 baut den Inhalt komplett aus)
+    // =========================
+    function openDetails(id){
+      state.selectedVehicleId = id;
+      byId("detailsOverlay").classList.add("show");
+      byId("detailsBody").innerHTML = `
+        <div class="muted">Lade Details…</div>
+        <div class="divider"></div>
+        <div class="muted">In Teil 2 werden hier Galerie, Ausstattung, Anfrage-CTA, WhatsApp/Telefon etc. gerendert.</div>
+      `;
+
+      const v = VEHICLES.find(x=>x.id===id);
+      byId("detailsTitle").textContent = v ? `${v.make} ${v.model} • ${v.trim}` : "Fahrzeugdetails";
+
+      // update action buttons states
+      byId("btnDetailsFav").classList.toggle("primary", state.fav.has(id));
+      byId("btnDetailsCmp").classList.toggle("primary", state.cmp.has(id));
+
+      // In Teil 2: renderDetails(v)
+      // Für jetzt: Minimal-Preview
+      if(v){
+        byId("detailsBody").innerHTML = `
+          <div class="two-col">
+            <div class="gallery">
+              <div class="gallery-main">
+                <img src="${escapeHtml(v.images?.[0]||"")}" alt="${escapeHtml(v.make+" "+v.model)}">
+              </div>
+              <div class="gallery-strip">
+                ${(v.images||[]).map((src,i)=>`
+                  <div class="thumb2 ${i===0?"active":""}">
+                    <img src="${escapeHtml(src)}" alt="Bild ${i+1}">
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="sidebox">
+              <div>
+                <div class="muted">Preis</div>
+                <div class="pricebig">${escapeHtml(formatEUR(v.price))}</div>
+                <div class="muted" style="margin-top:4px;">${escapeHtml(String(v.year))} • ${escapeHtml(formatKM(v.km))} • ${escapeHtml(v.power)} PS</div>
+              </div>
+
+              <div class="list">
+                <div class="li"><span>Kraftstoff</span><b>${escapeHtml(v.fuel)}</b></div>
+                <div class="li"><span>Getriebe</span><b>${escapeHtml(v.gear)}</b></div>
+                <div class="li"><span>Farbe</span><b>${escapeHtml(v.color)}</b></div>
+                <div class="li"><span>Vorbesitzer</span><b>${escapeHtml(String(v.owners))}</b></div>
+              </div>
+
+              <button class="btn primary" onclick="quickInquiry('${escapeHtml(v.id)}')">Anfrage senden</button>
+              <button class="btn" onclick="toggleFav('${escapeHtml(v.id)}')">★ Favorit</button>
+              <button class="btn" onclick="toggleCmp('${escapeHtml(v.id)}')">⇄ Vergleich</button>
+
+              <div class="muted" style="font-size:12px;">
+                Hinweis: In Teil 2 kommen WhatsApp/Telefon-Buttons + Ausstattungsliste + Beschreibung.
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function closeDetails(){
+      byId("detailsOverlay").classList.remove("show");
+      state.selectedVehicleId = null;
+    }
+
+    // =========================
+    // Quick inquiry (Teil 2 erweitert zu sauberem Formular mit Fahrzeugbezug)
+    // =========================
+    function quickInquiry(id){
+      const v = VEHICLES.find(x=>x.id===id);
+      location.hash = "#/kontakt";
+      setTimeout(()=>{
+        byId("cMsg").value = v
+          ? `Hallo, ich interessiere mich für: ${v.make} ${v.model} (${v.trim}) – ID: ${v.id}. Bitte um Rückmeldung.`
+          : "Hallo, ich interessiere mich für ein Fahrzeug. Bitte um Rückmeldung.";
+        toast("Kontaktformular vorbereitet", v ? `${v.make} ${v.model}` : "");
+      }, 60);
+    }
+
+    // =========================
+    // Router (hash-based)
+    // =========================
+    function setRoute(hash){
+      state.route = hash || "#/fahrzeuge";
+      // reset page when changing primary list views
+      if(state.route === "#/fahrzeuge") state.page = 1;
+      render();
+      // scroll top of main
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function setActiveRouteView(){
+      const r = state.route;
+
+      // toggle views
+      byId("viewCars").classList.toggle("hide", r !== "#/fahrzeuge");
+      byId("viewFav").classList.toggle("hide", r !== "#/favoriten");
+      byId("viewCompare").classList.toggle("hide", r !== "#/vergleich");
+      byId("viewContact").classList.toggle("hide", r !== "#/kontakt");
+      byId("viewTrade").classList.toggle("hide", r !== "#/inzahlungnahme");
+      byId("viewLegal").classList.toggle("hide", !(r === "#/impressum" || r === "#/datenschutz"));
+
+      // hero only on cars
+      byId("hero").classList.toggle("hide", r !== "#/fahrzeuge");
+
+      // nav active feel
+      const map = {
+        "#/fahrzeuge": "navCars",
+        "#/favoriten": "navFav",
+        "#/vergleich": "navCompare",
+        "#/kontakt": "navContact",
+        "#/inzahlungnahme": "navTrade"
+      };
+      Object.values(map).forEach(id=> byId(id).classList.remove("primary"));
+      if(map[r]) byId(map[r]).classList.add("primary");
+
+      // legal titles placeholder (Teil 2 füllt die Inhalte)
+      if(r === "#/impressum"){
+        byId("legalTitle").textContent = "Impressum";
+        byId("legalBody").innerHTML = `<div class="muted">In Teil 2: Impressum-Template (Platzhalter) + Struktur.</div>`;
+      }
+      if(r === "#/datenschutz"){
+        byId("legalTitle").textContent = "Datenschutz";
+        byId("legalBody").innerHTML = `<div class="muted">In Teil 2: Datenschutz-Template (Platzhalter) + Map-Consent-Hinweis.</div>`;
+      }
+
+      // trade wizard placeholder
+      if(r === "#/inzahlungnahme"){
+        byId("tradeWizard").innerHTML = `<div class="muted">In Teil 2: kompletter Multi-Step Wizard (4 Schritte) inkl. Upload-Felder & Zusammenfassung.</div>`;
+        byId("tradeStepInfo").textContent = "1";
+      }
+    }
+
+    // =========================
+    // Events
+    // =========================
+    function bindEvents(){
+      window.addEventListener("hashchange", ()=> setRoute(location.hash || "#/fahrzeuge"));
+
+      byId("filterForm").addEventListener("submit", (e)=>{
+        e.preventDefault();
+        state.page = 1;
+        render();
+        toast("Filter angewendet");
+      });
+
+      byId("btnReset").addEventListener("click", ()=>{
+        byId("q").value = "";
+        byId("make").value = "Alle";
+        byId("fuel").value = "Alle";
+        byId("gear").value = "Alle";
+        byId("yearMin").value = "Alle";
+        byId("yearMax").value = "Alle";
+        byId("priceMin").value = "";
+        byId("priceMax").value = "";
+        byId("kmMin").value = "";
+        byId("kmMax").value = "";
+        byId("sort").value = "newest";
+        byId("perPage").value = "9";
+        state.perPage = 9;
+        state.onlyFav = false;
+        state.onlyNew = false;
+        byId("btnOnlyFav").classList.remove("primary");
+        byId("btnOnlyNew").classList.remove("primary");
+        state.page = 1;
+        render();
+        toast("Zurückgesetzt");
+      });
+
+      byId("btnOnlyFav").addEventListener("click", ()=>{
+        state.onlyFav = !state.onlyFav;
+        byId("btnOnlyFav").classList.toggle("primary", state.onlyFav);
+        state.page = 1;
+        render();
+        toast(state.onlyFav ? "Nur Favoriten aktiv" : "Nur Favoriten aus");
+      });
+
+      byId("btnOnlyNew").addEventListener("click", ()=>{
+        state.onlyNew = !state.onlyNew;
+        byId("btnOnlyNew").classList.toggle("primary", state.onlyNew);
+        state.page = 1;
+        render();
+        toast(state.onlyNew ? "Neu-Filter aktiv" : "Neu-Filter aus", "Neu = ≤ 14 Tage");
+      });
+
+      byId("btnPrev").addEventListener("click", ()=>{
+        state.page = Math.max(1, state.page - 1);
+        render();
+        window.scrollTo({ top: byId("viewCars").offsetTop - 80, behavior: "smooth" });
+      });
+
+      byId("btnNext").addEventListener("click", ()=>{
+        state.page += 1;
+        render();
+        window.scrollTo({ top: byId("viewCars").offsetTop - 80, behavior: "smooth" });
+      });
+
+      byId("btnClearFav").addEventListener("click", ()=>{
+        state.fav.clear();
+        saveLS("ra_fav", []);
+        toast("Favoriten gelöscht");
+        render();
+      });
+
+      byId("btnClearCmp").addEventListener("click", ()=>{
+        state.cmp.clear();
+        saveLS("ra_cmp", []);
+        toast("Vergleich geleert");
+        render();
+      });
+
+      // hero actions
+      byId("btnScrollToResults").addEventListener("click", ()=>{
+        const top = byId("viewCars").offsetTop - 80;
+        window.scrollTo({ top, behavior:"smooth" });
+      });
+      byId("btnOpenTradeFromHero").addEventListener("click", ()=> location.hash = "#/inzahlungnahme");
+      byId("btnQuickContact").addEventListener("click", ()=> location.hash = "#/kontakt");
+
+      // details modal
+      byId("btnCloseDetails").addEventListener("click", closeDetails);
+      byId("detailsOverlay").addEventListener("click", (e)=>{
+        if(e.target === byId("detailsOverlay")) closeDetails();
+      });
+      document.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape" && byId("detailsOverlay").classList.contains("show")) closeDetails();
+      });
+      byId("btnDetailsFav").addEventListener("click", ()=>{
+        if(state.selectedVehicleId) toggleFav(state.selectedVehicleId);
+      });
+      byId("btnDetailsCmp").addEventListener("click", ()=>{
+        if(state.selectedVehicleId) toggleCmp(state.selectedVehicleId);
+      });
+
+      // contact
+      byId("contactForm").addEventListener("submit", (e)=>{
+        e.preventDefault();
+        // Teil 2: echte Verarbeitung (Mail/Backend). Hier: Demo-Toast.
+        toast("Nachricht gesendet (Demo)", "In Teil 2 wird das an E-Mail/CRM angebunden.");
+        byId("contactForm").reset();
+      });
+      byId("btnContactDemo").addEventListener("click", ()=>{
+        byId("cName").value = "Max Mustermann";
+        byId("cEmail").value = "max@mail.de";
+        byId("cPhone").value = "+49 171 0000000";
+        byId("cMsg").value = "Hallo, ich hätte gerne eine Probefahrt / Finanzierungsauskunft. Bitte um Rückruf.";
+      });
+
+      // address/phone demo
+      byId("btnCopyAddress").addEventListener("click", async ()=>{
+        const addr = "Reichstein Automobile, Straße 1, 00000 Stadt";
+        try{
+          await navigator.clipboard.writeText(addr);
+          toast("Adresse kopiert", addr);
+        }catch{
+          toast("Kopieren nicht möglich", "Bitte manuell kopieren.");
+        }
+      });
+      byId("btnCall").addEventListener("click", ()=>{
+        toast("Anrufen (Demo)", "In Teil 2: tel:-Link mit echter Nummer.");
+      });
+      byId("btnWhatsapp").addEventListener("click", ()=>{
+        toast("WhatsApp (Demo)", "In Teil 2: wa.me Link mit vordefiniertem Text.");
+      });
+    }
+
+    // =========================
+    // Boot
+    // =========================
+    initFilters();
+    bindEvents();
+    setRoute(location.hash || "#/fahrzeuge");
+    render();
+  </script>
+</body>
+</html>
