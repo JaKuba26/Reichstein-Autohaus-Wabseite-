@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="de">
 <head>
@@ -13,38 +12,27 @@
        ========================= */
 
     :root{
-      --bg: #0b0f14;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.085);
-      --border: rgba(255,255,255,.10);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --faint: rgba(255,255,255,.52);
-      --accent: #c7a24b; /* Gold */
-      --accent2:#7dd3fc; /* Cool highlight */
-      --danger:#fb7185;
-      --ok:#34d399;
-      --shadow: 0 22px 60px rgba(0,0,0,.55);
-      --shadow2: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
-      --radius2: 14px;
-      --maxw: 1240px;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --panel2: #ffffff;
+  --border: rgba(15,23,42,.10);
+  --text: #0f172a;
+  --muted: rgba(15,23,42,.70);
+  --faint: rgba(15,23,42,.55);
 
-    *{ box-sizing: border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: var(--font);
-      color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(199,162,75,.25), transparent 60%),
-        radial-gradient(900px 500px at 95% 0%, rgba(125,211,252,.18), transparent 55%),
-        radial-gradient(900px 700px at 40% 120%, rgba(52,211,153,.10), transparent 60%),
-        linear-gradient(180deg, #070a0f 0%, #0b0f14 40%, #070a0f 100%);
-      overflow-x:hidden;
-    }
+  /* AutoHero-Feeling: blau + dezentes gold als highlight */
+  --accent: #2563eb;   /* Blau */
+  --accent2:#f59e0b;   /* Warm/Gold */
+  --danger:#ef4444;
+  --ok:#22c55e;
+
+  --shadow: 0 18px 50px rgba(2,6,23,.10);
+  --shadow2: 0 10px 30px rgba(2,6,23,.08);
+  --radius: 18px;
+  --radius2: 14px;
+  --maxw: 1180px;
+  --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
 
     a{ color: inherit; text-decoration: none; }
     button, input, select, textarea { font: inherit; color: inherit; }
@@ -201,7 +189,7 @@
     .panel{
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      background: var(--bg);
       box-shadow: var(--shadow2);
       overflow:hidden;
       margin: 12px 0 18px;
@@ -606,6 +594,185 @@
       display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
     }
     .t small{ color: var(--muted); display:block; margin-top: 4px; }
+    /* =========================
+   AutoHero-like (clean blocks)
+   ========================= */
+.topbar{
+  background: rgba(255,255,255,.85);
+  border-bottom: 1px solid var(--border);
+}
+.pill{
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.pill.primary{
+  background: rgba(37,99,235,.10);
+  border-color: rgba(37,99,235,.25);
+  color: var(--text);
+}
+.pill .dot{ background: var(--accent); box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
+
+.hero-card, .panel, .card, .mini, .modal, .pager{
+  background: #fff !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow2) !important;
+}
+.muted{ color: var(--muted) !important; }
+
+.btn{
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn.primary{
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn.ghost{ background: transparent; }
+
+/* AutoHero Sections */
+.ah-section{ margin: 18px auto; }
+.ah-card{
+  background:#fff; border:1px solid var(--border); border-radius: 22px;
+  box-shadow: var(--shadow2); padding: 18px;
+}
+.ah-head{ display:flex; flex-direction:column; gap:6px; margin-bottom: 14px; }
+.ah-head h2{ margin:0; font-size: 22px; letter-spacing: -.01em; }
+.ah-sub{ color: var(--muted); font-size: 14px; }
+
+.ah-search{
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom: 12px;
+}
+.ah-input{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  outline: none;
+}
+.ah-input:focus{ border-color: rgba(37,99,235,.45); box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
+.ah-btn{
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor:pointer;
+}
+.ah-btn.primary{
+  background: var(--accent);
+  border-color: var(--accent);
+  color:#fff;
+}
+.ah-brands{
+  display:grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+}
+.ah-brand{
+  border:1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+  text-align:center;
+  cursor:pointer;
+  transition:.15s ease;
+  color: var(--text);
+  font-size: 13px;
+}
+.ah-brand:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+.ah-brand b{ display:block; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.ah-tabs{ display:flex; gap:10px; margin: 10px 0 14px; }
+.ah-tab{
+  padding: 10px 14px;
+  border-radius: 12px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  color: var(--muted);
+}
+.ah-tab.active{
+  border-color: rgba(37,99,235,.35);
+  background: rgba(37,99,235,.10);
+  color: var(--text);
+}
+
+.ah-budget .ah-grid2{
+  display:grid;
+  grid-template-columns: 1.2fr 1fr 1fr .9fr;
+  gap: 12px;
+  align-items: end;
+}
+.ah-label{ display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.ah-row{ display:flex; gap:10px; }
+.ah-budgetbox{
+  border:1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  background: #fafafa;
+}
+.ah-budgettitle{ color: var(--muted); font-size: 12px; }
+.ah-budgetvalue{ font-size: 26px; font-weight: 800; margin: 8px 0 10px; }
+.ah-link{ display:inline-block; margin-top:10px; color: var(--accent); font-size: 13px; }
+
+.ah-tiles{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.ah-tile{
+  border:1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  background: #fff;
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+}
+.ah-tile b{ font-size: 14px; }
+.ah-tile span{ color: var(--muted); font-size: 13px; line-height:1.45; }
+
+@media (max-width: 980px){
+  .ah-brands{ grid-template-columns: repeat(4, 1fr); }
+  .ah-budget .ah-grid2{ grid-template-columns: 1fr; }
+  .ah-tiles{ grid-template-columns: 1fr; }
+}
+/* Karosserie-Auswahl (AutoHero-Style) */
+.bodybar{
+  margin: 14px 0 8px;
+}
+.bodybar-inner{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--shadow2);
+}
+.bodychip{
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 999px;
+  cursor:pointer;
+  transition:.15s ease;
+  font-size: 13px;
+}
+.bodychip:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow2);
+}
+.bodychip.active{
+  background: rgba(37,99,235,.10);
+  border-color: rgba(37,99,235,.30);
+}
   </style>
 </head>
 <body>
@@ -625,7 +792,9 @@
       <nav class="nav" aria-label="Hauptnavigation">
         <a class="pill" href="#/fahrzeuge" id="navCars"><span class="dot"></span>Fahrzeuge</a>
         <a class="pill" href="#/inzahlungnahme" id="navTrade">Inzahlungnahme</a>
+        <a class="pill" href="#/finanzierung" id="navFinance">Finanzierung</a>
         <a class="pill" href="#/kontakt" id="navContact">Kontakt</a>
+        
         <a class="pill" href="#/favoriten" id="navFav">Favoriten <span id="favCount" class="chip"><b>0</b></span></a>
         <a class="pill primary" href="#/vergleich" id="navCompare">Vergleich <span id="cmpCount" class="chip"><b>0</b></span></a>
       </nav>
@@ -633,6 +802,57 @@
   </header>
 
   <main class="wrap">
+   
+    <section class="bodybar">
+ <div class="bodybar-inner">
+
+  <button class="bodychip" data-body="SUV">
+    <img class="bodyimg" src="img/body/suv.svg" alt="">
+    <span>SUV</span>
+  </button>
+
+  <button class="bodychip" data-body="Kombi">
+    <img class="bodyimg" src="img/body/kombi.svg" alt="">
+    <span>Kombi</span>
+  </button>
+
+  <button class="bodychip" data-body="Limousine">
+    <img class="bodyimg" src="img/body/limousine.svg" alt="">
+    <span>Limousine</span>
+  </button>
+
+  <button class="bodychip" data-body="Van / Kleinbus">
+    <img class="bodyimg" src="img/body/van.svg" alt="">
+    <span>Van / Kleinbus</span>
+  </button>
+
+  <button class="bodychip" data-body="Kompakt">
+    <img class="bodyimg" src="img/body/kleinwagen.svg" alt="">
+    <span>Kleinwagen</span>
+  </button>
+
+  <button class="bodychip" data-body="Cabrio">
+    <img class="bodyimg" src="img/body/cabrio.svg" alt="">
+    <span>Cabrio</span>
+  </button>
+
+  <button class="bodychip" data-body="Coupe">
+    <img class="bodyimg" src="img/body/coupe.svg" alt="">
+    <span>Coupé / Sport</span>
+  </button>
+
+  <button class="bodychip" data-body="Pickup">
+    <img class="bodyimg" src="img/body/pickup.svg" alt="">
+    <span>Pickup</span>
+  </button>
+
+  <button class="bodychip" data-body="Alle">
+    <img class="bodyimg" src="img/body/alle.svg" alt="">
+    <span>Alle</span>
+  </button>
+
+</div>
+</section>
     <!-- HERO -->
     <section class="hero" id="hero">
       <div class="hero-grid">
@@ -706,6 +926,109 @@
     </div>
   </div>
 </section>
+
+<!-- STARTSEITE: Quick Actions (AutoHero-like) -->
+<section class="ah-section">
+  <div class="ah-card">
+    <div class="ah-head">
+      <h2>Fahrzeug finden</h2>
+      <span class="ah-sub">Suche nach Marke, Modell oder Budget – in Sekunden.</span>
+    </div>
+
+    <div class="ah-search">
+      <input id="ahSearch" class="ah-input" placeholder="z.B. BMW 3er, Audi A4, AMG …" />
+      <button class="ah-btn primary" id="ahSearchBtn">Suchen</button>
+      <button class="ah-btn" id="ahOpenAll">Alle Fahrzeuge</button>
+    </div>
+
+    <div class="ah-brands" id="ahBrands"></div>
+  </div>
+</section>
+
+<section class="ah-section">
+  <div class="ah-card">
+    <div class="ah-head">
+      <h2>Finde Autos, die zu deinem Budget passen</h2>
+      <span class="ah-sub">Schnelle Schätzung – unverbindlich.</span>
+    </div>
+
+    <div class="ah-tabs">
+      <button class="ah-tab active" data-mode="month">Pro Monat</button>
+      <button class="ah-tab" data-mode="total">Gesamtbetrag</button>
+    </div>
+
+    <div class="ah-budget">
+      <div class="ah-grid2">
+        <div>
+          <label class="ah-label">Monatliche Rate (von / bis)</label>
+          <div class="ah-row">
+            <select class="ah-input" id="rateMin">
+              <option value="">Ab</option><option>150</option><option>200</option><option>250</option><option>300</option><option>400</option><option>500</option>
+            </select>
+            <select class="ah-input" id="rateMax">
+              <option value="">Bis</option><option>250</option><option>300</option><option>400</option><option>500</option><option>650</option><option>800</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="ah-label">Anzahlung</label>
+          <input class="ah-input" id="downPay" placeholder="0 €" inputmode="numeric" />
+        </div>
+
+        <div>
+          <label class="ah-label">Laufzeit</label>
+          <select class="ah-input" id="term">
+            <option value="">Monate</option>
+            <option>24</option><option>36</option><option>48</option><option>60</option><option>72</option>
+          </select>
+        </div>
+
+        <div class="ah-budgetbox">
+          <div class="ah-budgettitle">Geschätztes Budget</div>
+          <div class="ah-budgetvalue" id="budgetOut">0 €</div>
+          <button class="ah-btn primary" id="budgetApply">Finde dein Auto</button>
+          <a href="#/kontakt" class="ah-link">Jetzt anfragen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ah-section">
+  <div class="ah-card">
+    <div class="ah-head">
+      <h2>Vom Klick bis zur Übergabe – sorgenfrei</h2>
+      <span class="ah-sub">Kurz, klar, kundenfreundlich.</span>
+    </div>
+
+    <div class="ah-tiles">
+      <div class="ah-tile">
+        <b>Finanzierung</b>
+        <span>Unverbindliche Anfrage – schnell beantwortet.</span>
+        <button class="ah-btn" onclick="location.hash='#/kontakt'">Anfragen</button>
+      </div>
+
+      <div class="ah-tile">
+        <b>Inzahlungnahme</b>
+        <span>Fahrzeugdaten eingeben – wir melden uns mit Angebot.</span>
+        <button class="ah-btn" onclick="location.hash='#/inzahlungnahme'">Starten</button>
+      </div>
+
+      <div class="ah-tile">
+        <b>Qualität</b>
+        <span>Geprüfte Fahrzeuge & transparente Beratung.</span>
+        <button class="ah-btn" onclick="location.hash='#/fahrzeuge'">Fahrzeuge ansehen</button>
+      </div>
+
+      <div class="ah-tile">
+        <b>Kontakt</b>
+        <span>030 – 74374315 • info@reichsteinautomobile.de</span>
+        <button class="ah-btn primary" onclick="location.hash='#/kontakt'">Kontakt</button>
+      </div>
+    </div>
+  </div>
+</section>
     <section id="viewCars">
       <div class="panel">
         <div class="panel-head">
@@ -726,6 +1049,10 @@
               <label for="make">Marke</label>
               <select class="control" id="make" name="make"></select>
             </div>
+            <div class="field span-3">
+  <label for="bodyType">Karosserie</label>
+  <select class="control" id="bodyType" name="bodyType"></select>
+</div>
 
             <div class="field span-3">
               <label for="fuel">Kraftstoff</label>
@@ -954,7 +1281,19 @@
         </div>
       </div>
     </section>
-
+<section id="viewFinance" class="hide">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Finanzierung <small>Budget • Rate • Anfrage</small></h2>
+    </div>
+    <div class="panel-body">
+      <div class="muted">
+        Hier kommt dein Finanzierungsblock rein (du hast ihn schon in den AutoHero-Blöcken).
+        Wir können ihn hier nochmal als eigene Seite anzeigen oder direkt zur Kontaktanfrage führen.
+      </div>
+    </div>
+  </div>
+</section>
     <!-- Rechtliches -->
     <section id="viewLegal" class="hide">
       <div class="panel">
@@ -1041,6 +1380,7 @@ const CONFIG = {
         id: "ra-1001",
         make: "BMW",
         model: "320d Touring",
+        bodyType: "Kombi",
         trim: "M Sport",
         price: 28990,
         year: 2020,
@@ -1065,6 +1405,7 @@ const CONFIG = {
         id: "ra-1002",
         make: "Audi",
         model: "A4 Avant",
+        bodyType: "Kombi",
         trim: "S line",
         price: 26990,
         year: 2019,
@@ -1089,6 +1430,7 @@ const CONFIG = {
         id: "ra-1003",
         make: "Mercedes-Benz",
         model: "C 220d",
+        bodyType: "Limousine",
         trim: "AMG Line",
         price: 31990,
         year: 2021,
@@ -1113,6 +1455,7 @@ const CONFIG = {
         id: "ra-1004",
         make: "Volkswagen",
         model: "Golf VII",
+        bodyType: "Kompakt",
         trim: "Highline",
         price: 15990,
         year: 2018,
@@ -1137,6 +1480,7 @@ const CONFIG = {
         id: "ra-1005",
         make: "Tesla",
         model: "Model 3",
+        bodyType: "Limousine",
         trim: "Long Range",
         price: 34990,
         year: 2020,
@@ -1161,6 +1505,7 @@ const CONFIG = {
         id: "ra-1006",
         make: "Porsche",
         model: "Macan",
+        bodyType: "SUV",
         trim: "S",
         price: 58900,
         year: 2019,
@@ -1255,6 +1600,9 @@ const CONFIG = {
       fillSelect("gear", gears);
       fillSelect("yearMin", yearOpts);
       fillSelect("yearMax", yearOpts);
+      const bodies = ["Alle", ...uniq(VEHICLES.map(v=>v.bodyType).filter(Boolean)).sort()];
+fillSelect("bodyType", bodies);
+byId("bodyType").value = "Alle";
 
       // defaults
       byId("make").value = "Alle";
@@ -1284,6 +1632,7 @@ const CONFIG = {
       const make = byId("make").value;
       const fuel = byId("fuel").value;
       const gear = byId("gear").value;
+      const bodyType = byId("bodyType").value;
       const yearMin = byId("yearMin").value === "Alle" ? null : parseInt(byId("yearMin").value, 10);
       const yearMax = byId("yearMax").value === "Alle" ? null : parseInt(byId("yearMax").value, 10);
       const priceMin = clampInt(byId("priceMin").value, 0, 9999999);
@@ -1293,7 +1642,7 @@ const CONFIG = {
       const sort = byId("sort").value;
       const perPage = parseInt(byId("perPage").value, 10) || 9;
 
-      return { q, make, fuel, gear, yearMin, yearMax, priceMin, priceMax, kmMin, kmMax, sort, perPage };
+      return { q, make, fuel, gear, yearMin, yearMax, priceMin, priceMax, kmMin, kmMax, sort, perPage, bodyType,};
     }
 
     function applyQuery(list, q){
@@ -1323,6 +1672,7 @@ const CONFIG = {
       if(f.make !== "Alle") list = list.filter(v=> v.make === f.make);
       if(f.fuel !== "Alle") list = list.filter(v=> v.fuel === f.fuel);
       if(f.gear !== "Alle") list = list.filter(v=> v.gear === f.gear);
+      if(f.bodyType && f.bodyType !== "Alle") list = list.filter(v=> v.bodyType === f.bodyType);
       if(f.yearMin != null) list = list.filter(v=> v.year >= f.yearMin);
       if(f.yearMax != null) list = list.filter(v=> v.year <= f.yearMax);
       if(f.priceMin != null) list = list.filter(v=> v.price >= f.priceMin);
@@ -1689,6 +2039,7 @@ const CONFIG = {
       byId("viewFav").classList.toggle("hide", r !== "#/favoriten");
       byId("viewCompare").classList.toggle("hide", r !== "#/vergleich");
       byId("viewContact").classList.toggle("hide", r !== "#/kontakt");
+      byId("viewFinance").classList.toggle("hide", r !== "#/finanzierung");
       byId("viewTrade").classList.toggle("hide", r !== "#/inzahlungnahme");
       byId("viewLegal").classList.toggle("hide", !(r === "#/impressum" || r === "#/datenschutz"));
 
@@ -1701,7 +2052,8 @@ const CONFIG = {
         "#/favoriten": "navFav",
         "#/vergleich": "navCompare",
         "#/kontakt": "navContact",
-        "#/inzahlungnahme": "navTrade"
+        "#/inzahlungnahme": "navTrade",
+        "#/finanzierung": "navFinance",
       };
       Object.values(map).forEach(id=> byId(id).classList.remove("primary"));
       if(map[r]) byId(map[r]).classList.add("primary");
@@ -1727,6 +2079,26 @@ const CONFIG = {
     // Events
     // =========================
     function bindEvents(){
+          // Karosserie-Quickfilter (oben)
+document.querySelectorAll(".bodychip").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const bt = btn.getAttribute("data-body");
+
+    document.querySelectorAll(".bodychip").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+
+    location.hash = "#/fahrzeuge";
+    setTimeout(()=>{
+      const sel = document.getElementById("bodyType");
+      if(sel){
+        sel.value = (bt === "Alle") ? "Alle" : bt;
+      }
+      state.page = 1;
+      render();
+      window.scrollTo({ top: document.getElementById("viewCars").offsetTop - 80, behavior:"smooth" });
+    }, 60);
+  });
+});
       window.addEventListener("hashchange", ()=> setRoute(location.hash || "#/fahrzeuge"));
 
       byId("filterForm").addEventListener("submit", (e)=>{
@@ -1862,6 +2234,124 @@ const CONFIG = {
     // =========================
     initFilters();
     bindEvents();
+    // ===== AutoHero-like Start: Brands + Budget =====
+function initAutoHeroBlocks(){
+  // Brands (aus deinen VEHICLES)
+  const brandsEl = document.getElementById("ahBrands");
+  if(brandsEl){
+    const makes = Array.from(new Set(VEHICLES.map(v=>v.make))).sort().slice(0, 10);
+    brandsEl.innerHTML = makes.map(m=>`
+      <div class="ah-brand" data-make="${escapeHtml(m)}">
+        <div style="font-weight:800;font-size:18px;">${escapeHtml(m[0])}</div>
+        <b>${escapeHtml(m)}</b>
+      </div>
+    `).join("");
+
+    brandsEl.querySelectorAll("[data-make]").forEach(x=>{
+      x.addEventListener("click", ()=>{
+        location.hash = "#/fahrzeuge";
+        setTimeout(()=>{
+          document.getElementById("make").value = x.getAttribute("data-make");
+          state.page = 1;
+          render();
+          window.scrollTo({ top: document.getElementById("viewCars").offsetTop - 80, behavior:"smooth" });
+        }, 50);
+      });
+    });
+  }
+
+  // Search
+  const s = document.getElementById("ahSearch");
+  const b = document.getElementById("ahSearchBtn");
+  const all = document.getElementById("ahOpenAll");
+  const goSearch = ()=>{
+    const val = (s?.value||"").trim();
+    location.hash = "#/fahrzeuge";
+    setTimeout(()=>{
+      document.getElementById("q").value = val;
+      state.page = 1;
+      render();
+      window.scrollTo({ top: document.getElementById("viewCars").offsetTop - 80, behavior:"smooth" });
+    }, 50);
+  };
+  if(b && s){
+    b.addEventListener("click", goSearch);
+    s.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefault(); goSearch(); }});
+  }
+  if(all){
+    all.addEventListener("click", ()=>{
+      location.hash = "#/fahrzeuge";
+      setTimeout(()=>{
+        state.page = 1;
+        render();
+        window.scrollTo({ top: document.getElementById("viewCars").offsetTop - 80, behavior:"smooth" });
+      }, 50);
+    });
+  }
+
+  // Tabs (nur optisch – Mode merken)
+  let budgetMode = "month";
+  document.querySelectorAll(".ah-tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      document.querySelectorAll(".ah-tab").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      budgetMode = t.getAttribute("data-mode") || "month";
+      calcBudget();
+    });
+  });
+
+  // Budget calc (simple)
+  const rateMin = document.getElementById("rateMin");
+  const rateMax = document.getElementById("rateMax");
+  const downPay = document.getElementById("downPay");
+  const term = document.getElementById("term");
+  const out = document.getElementById("budgetOut");
+  const apply = document.getElementById("budgetApply");
+
+  function num(v){ return parseInt(String(v||"").replace(/[^\d]/g,""),10) || 0; }
+
+  function calcBudget(){
+    if(!out) return;
+    const dp = num(downPay?.value);
+    const months = num(term?.value) || 48;
+    const r1 = num(rateMin?.value);
+    const r2 = num(rateMax?.value);
+
+    if(budgetMode === "month"){
+      const useRate = r2 || r1;
+      const total = (useRate * months) + dp;
+      out.textContent = total ? formatEUR(total) : "0 €";
+    }else{
+      // total mode: nutze rateMax als Gesamt (quick hack), oder user tippt später
+      const total = (r2 || r1) + dp;
+      out.textContent = total ? formatEUR(total) : "0 €";
+    }
+  }
+
+  [rateMin, rateMax, downPay, term].forEach(el=>{
+    if(el) el.addEventListener("input", calcBudget);
+    if(el) el.addEventListener("change", calcBudget);
+  });
+
+  if(apply){
+    apply.addEventListener("click", ()=>{
+      // Budget -> PreisMax Filter setzen
+      const budgetText = (out?.textContent||"").replace(/[^\d]/g,"");
+      const budget = parseInt(budgetText,10) || 0;
+      location.hash = "#/fahrzeuge";
+      setTimeout(()=>{
+        document.getElementById("priceMax").value = budget ? String(budget) : "";
+        state.page = 1;
+        render();
+        window.scrollTo({ top: document.getElementById("viewCars").offsetTop - 80, behavior:"smooth" });
+      }, 50);
+    });
+  }
+
+  calcBudget();
+}
+
+initAutoHeroBlocks();
     setRoute(location.hash || "#/fahrzeuge");
     render();
     function applyCompanyData(){
@@ -1902,5 +2392,3 @@ applyCompanyData();
 </body>
 </html>
 
-
-.
