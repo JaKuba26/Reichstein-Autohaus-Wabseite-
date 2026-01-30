@@ -39,6 +39,7 @@
 
     /* Layout */
     .wrap{ width: min(var(--maxw), calc(100% - 32px)); margin: 0 auto; }
+
     .topbar{
       position: sticky; top: 0; z-index: 50;
       backdrop-filter: blur(16px);
@@ -62,8 +63,16 @@
       filter: saturate(1.1) contrast(1.05);
     }
     .brand-title{
-      display:flex; flex-direction:column; line-height:1.1;
-    }
+  display:flex;
+  flex-direction:column;
+  line-height:1.1;
+}
+
+/* Untertitel im Header ausblenden */
+.brand-title span{
+  display:none;
+}
+
     .brand-title strong{ font-size: 14px; letter-spacing: .25px; }
     .brand-title span{ font-size: 12px; color: var(--muted); }
 
