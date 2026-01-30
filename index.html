@@ -560,15 +560,52 @@
       .foot-grid{ grid-template-columns: 1fr; }
     }
     @media (max-width: 620px){
-      .brand{ min-width: auto; }
-      .card{ grid-column: span 12; }
-      .specs{ grid-template-columns: repeat(2, 1fr); }
-      .filters{ grid-template-columns: repeat(12, 1fr); }
-      .field{ grid-column: span 12; }
-      .range{ flex-direction:column; }
-      .pager{ flex-direction:column; align-items:stretch; }
-      .nav{ justify-content:flex-end; }
-    }
+
+  html, body{
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .hero-grid{ grid-template-columns: 1fr; }
+
+  .grid,
+  .filters,
+  .foot-grid{
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .card,
+  .mini,
+  .panel,
+  .ah-card{
+    grid-column: span 12;
+  }
+
+  .field,
+  .field.span-2,
+  .field.span-3,
+  .field.span-4,
+  .field.span-6{
+    grid-column: span 12;
+  }
+
+  .specs{ grid-template-columns: repeat(2, 1fr); }
+
+  .range{ flex-direction: column; }
+
+  .pager{ flex-direction: column; align-items: stretch; }
+
+  .nav{ justify-content: flex-start; }
+
+  .sidebox{ position: static; top: auto; }
+
+  .ah-brands{ grid-template-columns: repeat(2, 1fr); }
+
+  .ah-tiles{ grid-template-columns: 1fr; }
+
+  .bodybar-inner{ justify-content: flex-start; }
+
+}
 
     /* Utility */
     .hide{ display:none !important; }
